@@ -1,4 +1,3 @@
-# kpi
 
 # https://www.klipfolio.com/resources/kpi-examples
 
