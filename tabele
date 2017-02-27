@@ -1,4 +1,4 @@
-# kpi
+
 CREATE TABLE Driver
 (
 ID_Driver INT primary key,
