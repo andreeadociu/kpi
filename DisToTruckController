@@ -1,0 +1,72 @@
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Web.Http;
+using w_KPI_v2.Models;
+
+namespace w_KPI_v2.Controllers
+{
+    public class DisToTruckController : ApiController
+    {
+        decimal t;
+        decimal r;
+
+        public void setareTarget(decimal tar)
+        {
+            this.t = tar;
+        }
+
+        public void calculRaport()
+        {
+            using (SqlConnection conn = new SqlConnection("Data Source=EVGHIN-PC\\SQLEXPRESS; Initial Catalog=ComtecMaxima; Integrated Security=True"))
+            {
+                conn.Open();
+
+                using (SqlCommand comm1 = new SqlCommand("SELECT COUNT(*) FROM resource WHERE resourceTag=2", conn))
+                {
+                    using (SqlCommand comm2 = new SqlCommand("SELECT SUM(distance) FROM transport", conn))
+                    {
+                        int trucks = (int)comm1.ExecuteScalar();
+                        var dist = comm2.ExecuteScalar();
+                        decimal dist2 = (decimal)dist;
+
+                        decimal rap = dist2 / trucks;
+
+                        //supposed the max value is 100,000km and we want to see the percentage of rap
+                        //rap = rap / 1000;
+                        //DisToTruck d = new DisToTruck(rap);
+
+                        this.r = 100 * rap / t;
+                    }
+                }
+
+                conn.Close();
+            }
+        }
+
+        public decimal Get()
+        {
+            this.setareTarget(150000);
+            this.calculRaport();
+            return this.r;
+        }
+
+        // POST: api/DisToTruck
+        public void Post([FromBody]string value)
+        {
+        }
+
+        // PUT: api/DisToTruck/5
+        public void Put(int id, [FromBody]string value)
+        {
+        }
+
+        // DELETE: api/DisToTruck/5
+        public void Delete(int id)
+        {
+        }
+    }
+}
